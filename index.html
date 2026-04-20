@@ -107,11 +107,30 @@
       <section>
         <h2>Calibration</h2>
         <p>Calibration is stored on the device via the Even companion.</p>
+        <div id="calStatus" style="font-size:12px;color:#888;margin-bottom:8px">loading...</div>
         <button id="reset">Reset calibration</button>
         <span id="resetStatus"></span>
       </section>
 
-      <footer>Uses the glasses' IMU at 10 Hz. Roll only — pitch is not shown.</footer>
+      <section id="mockSection" style="display:none">
+        <h2>Simulator mock</h2>
+        <p>Real IMU is off in simulator mode. Drag the slider to drive the bubble for screenshots.</p>
+        <input id="mockRoll" type="range" min="-30" max="30" step="0.1" value="0" style="width:100%" />
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-top:4px">
+          <span>−30°</span>
+          <span id="mockRollValue" style="color:#9FE870">0.0°</span>
+          <span>+30°</span>
+        </div>
+        <div style="margin-top:8px">
+          <button id="mockZero" type="button">Reset slider</button>
+          <button id="mockLevel" type="button">Level (0°)</button>
+        </div>
+      </section>
+
+      <footer>
+        Uses the glasses' IMU at 10 Hz. Roll only — pitch is not shown.
+        <span id="mockFooter" style="display:none"> Append <kbd>?mock</kbd> to the URL for a simulator slider.</span>
+      </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

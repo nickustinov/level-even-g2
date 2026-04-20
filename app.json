@@ -1,11 +1,14 @@
 {
-  "package_id": "com.example.level",
+  "package_id": "com.nickustinov.level",
   "edition": "202601",
   "name": "Level",
-  "version": "0.1.0",
-  "min_app_version": "2.0.0",
+  "version": "1.0.8",
+  "min_app_version": "0.1.0",
   "min_sdk_version": "0.0.10",
+  "supported_languages": ["en"],
+  "tagline": "Bubble level on your G2",
+  "description": "A spirit level for Even Realities G2 smart glasses. Reads the onboard IMU and shows a construction-style bubble vial with a live roll readout. Tap the temple to zero the reference at any orientation (persists across launches). Double-tap to exit. No network, microphone, camera, location, or album access — IMU and local storage only.",
+  "author": "nick",
   "entrypoint": "index.html",
-  "permissions": [],
-  "supported_languages": ["en"]
+  "permissions": []
 }

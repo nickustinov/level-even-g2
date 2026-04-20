@@ -1,15 +1,16 @@
 {
   "name": "level-even-g2",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.8",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "qr": "evenhub qr --http --port 5173",
-    "pack": "evenhub pack",
-    "simulate": "evenhub-simulator http://localhost:5173"
+    "pack": "npm run build && evenhub pack app.json dist -o level.ehpk",
+    "simulate": "evenhub-simulator http://localhost:5173?mock",
+    "simulate:automation": "evenhub-simulator http://localhost:5173?mock --automation-port 9898"
   },
   "dependencies": {
     "@evenrealities/even_hub_sdk": "^0.0.10"
