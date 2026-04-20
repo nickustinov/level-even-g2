@@ -20,7 +20,7 @@ const SPACE_PX = 5
 const RAIL_N = 28
 const SWEET_HALF = 2                      // ticks at center±2 → ~60px zone
 const VIAL_RANGE_DEG = 30
-const LEVEL_TOL_DEG = 0.5
+const LEVEL_TOL_DEG = 0.1
 const SMOOTHING = 0.25
 const FRAME_MIN_MS = 100
 // LVGL renders a short left-side gap that `paddingLength` doesn't cover;
@@ -42,6 +42,21 @@ const TICK_T = '\u2533' // ┳
 const TICK_B = '\u253B' // ┻
 const BUBBLE = '\u25CF' // ●
 const IDEO_SP = '\u3000' // fullwidth space, same 20px as rail glyphs
+
+// The IMU sits rotated inside the temple arm, so the head's lateral
+// (ear-to-ear) axis lands on this unit vector in IMU body frame —
+// derived empirically from the cross product of two gravity samples
+// captured during a pure nodding motion on a G2 unit. Projecting
+// gravity onto it isolates roll from pitch/yaw.
+const LAT_X = 0.46
+const LAT_Y = 0.88
+const LAT_Z = 0.15
+// Vertical direction for the mock: the component of world-up (0,0,1)
+// that's perpendicular to LAT, renormalised. Lets the mock reach exact
+// slider values through the roll formula.
+const VERT_X = -0.070
+const VERT_Y = -0.133
+const VERT_Z = 0.988
 
 type Vec3 = { x: number; y: number; z: number }
 
@@ -122,8 +137,8 @@ const unsubscribe = bridge.onEvenHubEvent(event => {
   // checks so protobuf zero-coalescing doesn't treat every non-click
   // event as a click.
   if (sys?.imuData) {
-    const { y = 0, z = 0 } = sys.imuData
-    processImu(y, z)
+    const { x = 0, y = 0, z = 0 } = sys.imuData
+    processImu(x, y, z)
     return
   }
 
@@ -197,8 +212,8 @@ if (!MOCK) {
 }
 
 // Common entry point for real and mocked IMU samples.
-function processImu(y: number, z: number) {
-  lowpass({ x: 0, y, z })
+function processImu(x: number, y: number, z: number) {
+  lowpass({ x, y, z })
   const now = performance.now()
   lastImuAt = now
   if (now - lastFrameAt >= FRAME_MIN_MS) {
@@ -229,18 +244,27 @@ function startMockImu() {
   setInterval(() => {
     const rollDeg = Number(slider.value)
     const r = (rollDeg * Math.PI) / 180
-    // Gravity vector with pitch=0: y = sin(roll), z = cos(roll).
-    processImu(Math.sin(r), Math.cos(r))
+    // Synthesize gravity as sin(roll)·lateral + cos(roll)·vertical, where
+    // vertical is chosen orthogonal to lateral so the computed roll comes
+    // back out of the formula exactly as the slider value.
+    processImu(
+      LAT_X * Math.sin(r) + VERT_X * Math.cos(r),
+      LAT_Y * Math.sin(r) + VERT_Y * Math.cos(r),
+      LAT_Z * Math.sin(r) + VERT_Z * Math.cos(r),
+    )
   }, 100)
 }
 
 function lowpass(s: Vec3) {
+  filtered.x = filtered.x * (1 - SMOOTHING) + s.x * SMOOTHING
   filtered.y = filtered.y * (1 - SMOOTHING) + s.y * SMOOTHING
   filtered.z = filtered.z * (1 - SMOOTHING) + s.z * SMOOTHING
 }
 
 function computeRoll(v: Vec3): number {
-  return (Math.atan2(v.y, v.z) * 180) / Math.PI
+  const mag = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z) || 1
+  const lat = (LAT_X * v.x + LAT_Y * v.y + LAT_Z * v.z) / mag
+  return (Math.asin(Math.max(-1, Math.min(1, lat))) * 180) / Math.PI
 }
 
 function fmtDeg(deg: number): string {
