@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <title>Level</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #232323;
+        color: #E5E5E5;
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        touch-action: manipulation;
+        -webkit-text-size-adjust: 100%;
+        overscroll-behavior: none;
+      }
+      #app {
+        box-sizing: border-box;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+      h1 {
+        margin: 0 0 4px 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .sub {
+        color: #888;
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      section {
+        margin-bottom: 24px;
+      }
+      section h2 {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #9FE870;
+        margin: 0 0 8px 0;
+      }
+      p, li {
+        color: #CCC;
+        font-size: 13px;
+        margin: 0 0 6px 0;
+      }
+      ul {
+        padding-left: 20px;
+        margin: 0 0 0 0;
+      }
+      kbd {
+        display: inline-block;
+        padding: 1px 6px;
+        border: 1px solid #444;
+        border-radius: 3px;
+        background: #2a2a2a;
+        color: #E5E5E5;
+        font: 12px/1 ui-monospace, Menlo, Consolas, monospace;
+      }
+      button {
+        appearance: none;
+        background: #2a2a2a;
+        color: #E5E5E5;
+        border: 1px solid #555;
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button:active { background: #3a3a3a; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      #resetStatus {
+        margin-left: 12px;
+        color: #9FE870;
+        font-size: 12px;
+      }
+      footer {
+        color: #555;
+        font-size: 11px;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Level</h1>
+      <div class="sub">Check the glasses display for the bubble vial.</div>
+
+      <section>
+        <h2>How to use</h2>
+        <ul>
+          <li>Place the glasses on a surface you trust to be level.</li>
+          <li>Tap the temple touchpad to zero the reference — the offset persists across launches.</li>
+          <li>Tap again to clear the reference.</li>
+          <li>Double-tap to exit.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Reading the vial</h2>
+        <p>The bubble (<kbd>●</kbd>) rises toward the high side, like a spirit level. When it sits between the inner ticks (within ±0.5°) the header shows <kbd>★ LEVEL ★</kbd>.</p>
+      </section>
+
+      <section>
+        <h2>Calibration</h2>
+        <p>Calibration is stored on the device via the Even companion.</p>
+        <button id="reset">Reset calibration</button>
+        <span id="resetStatus"></span>
+      </section>
+
+      <footer>Uses the glasses' IMU at 10 Hz. Roll only — pitch is not shown.</footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
